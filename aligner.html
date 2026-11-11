@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-api="https://ceramics-dental-lab-offers.netlify.app">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Clear aligners for your practice | Ceramics Dental Lab</title>
+<link rel="preload" href="fonts/PlusJakartaSans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="page.css?v=11102252">
+</head>
+<body class="lay-film" data-page="aligner">
+<!-- Built by tools/build.py. Edit the PAGES entry there, not this file. -->
+<main>
+
+<section class="hero">
+  <video class="hero-film" autoplay muted loop playsinline poster="video/lab-poster.webp" aria-hidden="true"><source src="video/lab.mp4" type="video/mp4"></video>
+  <header class="top">
+    <a class="brand" href="#start" aria-label="Ceramics Dental Lab"><img src="img/logo-mark.png" alt="" width="46" height="46"><span><b>Ceramics</b><i>Dental Lab</i></span></a>
+    <a class="call" href="tel:+17863555727">(786) 355-5727</a>
+  </header>
+  <div class="hero-in">
+    <div class="hero-copy">
+      <h1>Clear aligners from your own practice.</h1>
+      <a class="deal" href="#start"><span>First 10 aligner steps</span><strong>$375</strong></a>
+    </div>
+    <form class="form" id="start" novalidate>
+      <p class="form-title">Start your case</p>
+      <input type="hidden" name="interest" value="aligner">
+      <label><span>Your name</span><input name="name" autocomplete="name" placeholder="Name" required></label>
+      <label><span>Practice</span><input name="practice" autocomplete="organization" placeholder="Practice" required></label>
+      <label><span>Phone</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Phone" required></label>
+      <label><span>Email</span><input name="email" type="email" inputmode="email" autocomplete="email" placeholder="Email"></label>
+      <div class="ticks">
+        <label class="tick"><input type="checkbox" name="text_ok"><b>Okay to text me</b></label>
+        <label class="tick"><input type="checkbox" name="email_ok"><b>Okay to email me</b></label>
+      </div>
+      <button class="btn" type="submit">Get started <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5.5 15.5 10 11 14.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <p class="form-done" role="status" hidden></p>
+    </form>
+    <template id="next">
+      <div class="next" role="status">
+        <p class="form-title">You're in.</p>
+        <p class="next-call">Carlos will call <b data-phone></b></p>
+        <p class="next-q">Which scanner do you use?</p>
+        <div class="scanners"><button type="button" data-scanner="iTero">iTero</button><button type="button" data-scanner="3Shape TRIOS">3Shape TRIOS</button><button type="button" data-scanner="Medit">Medit</button><button type="button" data-scanner="Dexis / Carestream">Dexis / Carestream</button><button type="button" data-scanner="CEREC">CEREC</button><button type="button" data-scanner="No scanner">No scanner</button></div>
+        <ol class="how" hidden></ol>
+        <a class="btn" href="tel:+17863555727">Call (786) 355-5727</a>
+      </div>
+    </template>
+    
+  </div>
+</section>
+
+<section class="steps"><a class="step reveal" href="#start"><b>01</b><span>Send your scan</span><img src="img/lab-design.webp" alt="Send your scan" loading="lazy"></a><a class="step reveal" href="#start"><b>02</b><span>Treatment plan</span><img src="img/lab-technician.webp" alt="Treatment plan" loading="lazy"></a><a class="step reveal" href="#start"><b>03</b><span>Approve and apply</span><img src="img/lab-aligners.webp" alt="Approve and apply" loading="lazy"></a></section>
+
+<section class="move">
+  <h2 class="reveal">Ten steps. Tooth by tooth.</h2>
+  <div class="viewer reveal">
+    <div class="frames" role="img" aria-label="An upper arch moving from crowded to aligned">
+      <img src="img/arch-01.webp" alt="" loading="lazy"><img src="img/arch-05.webp" alt="" loading="lazy"><img src="img/arch-10.webp" alt="" loading="lazy">
+    </div>
+    <div class="scrubber"><b data-step>Step 1</b><input type="range" min="0" max="100" value="0" aria-label="Drag to move the teeth from step 1 to step 10"><b>Step 10</b></div>
+  </div>
+</section>
+
+<section class="offer">
+  <img class="offer-photo recolor" src="img/steps.webp" alt="" loading="lazy">
+  <div class="offer-in reveal">
+    <h2>First 10 steps</h2>
+    <p class="big">$375</p>
+    <ul><li>50% off your first restorative unit</li><li>Free remakes</li></ul>
+    <a class="btn light" href="#start">Claim it</a>
+  </div>
+</section>
+
+<section class="close">
+  <a class="phone" href="tel:+17863555727">(786) 355-5727</a>
+  <a class="btn light" href="#start">Start your case</a>
+</section>
+
+</main>
+<footer class="foot">Ceramics Dental Lab, 3363 NE 163rd Street, Suite 804, North Miami Beach, FL. Introductory pricing, first case per practice.</footer>
+<script src="page.js?v=11102252"></script>
+</body>
+</html>
