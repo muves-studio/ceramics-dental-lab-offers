@@ -76,8 +76,12 @@
         : [`Open the lab list on your ${s}`, "Search Ceramics Dental Lab and add us", "Choose us when you send the scan"];
       how.replaceChildren(...steps.map(t => Object.assign(document.createElement("li"), { textContent: t }))); how.hidden = false;
       send("scanner", { el: s });
-      fetch(API + "/scanner", { method: "POST", keepalive: true, body: JSON.stringify({ ...who, scanner: s }) }).catch(() => {});
+      pick = s; clearTimeout(pickTimer); pickTimer = setTimeout(sendPick, 4000);      // the doctor may change their mind: send the last pick once they settle, or on leaving
     }));
+    let pick = "", pickTimer;
+    const sendPick = () => { clearTimeout(pickTimer); if (!pick) return; const scanner = pick; pick = ""; fetch(API + "/scanner", { method: "POST", keepalive: true, body: JSON.stringify({ ...who, scanner }) }).catch(() => {}); };
+    addEventListener("pagehide", sendPick);
+    document.addEventListener("visibilitychange", () => { if (document.hidden) sendPick(); });
   });
   // form behaviour: when the first field was reached, which field was last touched if they leave, and the ticks. Never what was typed.
   let lastField = "", submitted = false, firstFocus = false;
