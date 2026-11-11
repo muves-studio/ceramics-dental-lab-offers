@@ -1,13 +1,18 @@
-// Custom Dental aligner page: the teeth the visitor can move, reveals, picture cards, the form, and what the visitor did.
+// Ceramics Dental Lab offer pages: the teeth the visitor can move, reveals, picture cards, the form, and what the visitor did.
 (() => {
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
   // ---- what the visitor did. Nothing typed is ever sent, only that something was reached. ----
-  const q = new URLSearchParams(location.search), sid = Math.random().toString(36).slice(2, 10);
+  const q = new URLSearchParams(location.search), sid = Math.random().toString(36).slice(2, 10), t0 = performance.now();
+  // vid: a random id kept in this browser so a second visit is known to be the same browser. It holds nothing about the person.
+  let vid = ""; try { vid = localStorage.getItem("cdl_vid") || ""; if (!vid) { vid = Math.random().toString(36).slice(2, 12); localStorage.setItem("cdl_vid", vid); } } catch {}
+  let ref = ""; try { ref = document.referrer ? new URL(document.referrer).hostname.slice(0, 60) : ""; } catch {}
+  const bot = navigator.webdriver ? 1 : 0;                      // automated browsers (including our own page captures) mark themselves
   const API = document.documentElement.dataset.api || "";      // where sign-ups and clicks are posted; empty = this same server
-  const send = (e, more = {}) => navigator.sendBeacon?.(API + "/t", JSON.stringify({ e, sid, page: document.body.dataset.page, d: q.get("d") || "", variant: q.get("v") || "", w: innerWidth, ...more }));
-  send("view");
+  const send = (e, more = {}) => navigator.sendBeacon?.(API + "/t", JSON.stringify({ e, sid, vid, bot, page: document.body.dataset.page, d: q.get("d") || "", variant: q.get("v") || "", src: (q.get("utm_source") || q.get("s") || "").slice(0, 40), w: innerWidth, ...more }));
+  send("view", { ref, vh: innerHeight });
+  addEventListener("load", () => setTimeout(() => { const n = performance.getEntriesByType("navigation")[0]; if (n) send("load", { v: Math.round(n.loadEventEnd || n.domContentLoadedEventEnd || 0) }); }, 0));
 
   // ---- the teeth: three renders of one arch from one camera; the slider fades through them ----
   const viewer = document.querySelector(".viewer");
@@ -44,14 +49,15 @@
     send(first ? "form_incomplete" : "form_sent", { el: form.elements.interest.value });
     if (first) return first.focus();
     const v = n => form.elements[n].value.trim(), q = new URLSearchParams(location.search);
-    const who = { name: v("name"), practice: v("practice"), phone: v("phone"), email: v("email"), page: document.body.dataset.page, d: q.get("d") || "" };
+    const who = { name: v("name"), practice: v("practice"), phone: v("phone"), email: v("email"), page: document.body.dataset.page, d: q.get("d") || "", sid, vid };
+    submitted = true;
     // Only say "You're in" when the sign-up really arrived. If it did not, say so and give the phone number.
     const btn = form.querySelector("button[type=submit]"), done = form.querySelector(".form-done");
     btn.disabled = true; done.hidden = true;
     let ok = false;
     try { ok = (await fetch(API + "/lead", { method: "POST", keepalive: true, body: JSON.stringify({ ...who, interest: v("interest"), text_ok: form.elements.text_ok.checked, email_ok: form.elements.email_ok.checked }) })).ok; } catch { ok = false; }
     if (!ok) {
-      btn.disabled = false; send("form_failed", { el: who.page });
+      btn.disabled = false; submitted = false; send("form_failed", { el: who.page });
       done.textContent = "That did not go through. Please call (786) 355-5727."; done.hidden = false;
       return;
     }
@@ -70,7 +76,14 @@
       fetch(API + "/scanner", { method: "POST", keepalive: true, body: JSON.stringify({ ...who, scanner: s }) }).catch(() => {});
     }));
   });
-  form?.querySelectorAll("input:not([type=hidden]):not([type=checkbox])").forEach(f => f.addEventListener("focus", () => send("field", { el: f.name }), { once: true }));
+  // form behaviour: when the first field was reached, which field was last touched if they leave, and the ticks. Never what was typed.
+  let lastField = "", submitted = false, firstFocus = false;
+  form?.querySelectorAll("input:not([type=hidden]):not([type=checkbox])").forEach(f => {
+    f.addEventListener("focus", () => { lastField = f.name; if (!firstFocus) { firstFocus = true; send("first_focus", { el: f.name, v: Math.round(performance.now() - t0) }); } });
+    f.addEventListener("focus", () => send("field", { el: f.name }), { once: true });
+  });
+  form?.querySelectorAll("input[type=checkbox]").forEach(c => c.addEventListener("change", () => send("tick", { el: c.name, v: c.checked ? 1 : 0 })));
+  addEventListener("pagehide", () => { if (firstFocus && !submitted) send("abandon", { el: lastField }); });
 
   addEventListener("click", ev => { const t = ev.target.closest("a, button"); if (t) send("tap", { el: (t.dataset.interest || t.textContent.trim() || t.className).slice(0, 40) }); });
   const marks = [25, 50, 75, 100];
@@ -81,5 +94,7 @@
     else if (since.has(name)) { const sec = Math.round((performance.now() - since.get(name)) / 1000); since.delete(name); if (sec >= 2) send("section", { el: name, sec }); }
   }), { threshold: .4 });
   document.querySelectorAll("main > section").forEach(s => dwell.observe(s));
+  // a hidden tab is not reading: close every running section timer when the tab is hidden, restart nothing until it is seen again
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { since.forEach((t, name) => { const sec = Math.round((performance.now() - t) / 1000); if (sec >= 2) send("section", { el: name, sec }); }); since.clear(); } });
   addEventListener("pagehide", () => since.forEach((t0, name) => send("section", { el: name, sec: Math.round((performance.now() - t0) / 1000) })));
 })();
