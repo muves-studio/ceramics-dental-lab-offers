@@ -8,10 +8,13 @@
   // vid: a random id kept in this browser so a second visit is known to be the same browser. It holds nothing about the person.
   let vid = ""; try { vid = localStorage.getItem("cdl_vid") || ""; if (!vid) { vid = Math.random().toString(36).slice(2, 12); localStorage.setItem("cdl_vid", vid); } } catch {}
   let ref = ""; try { ref = document.referrer ? new URL(document.referrer).hostname.slice(0, 60) : ""; } catch {}
-  const bot = navigator.webdriver ? 1 : 0;                      // automated browsers (including our own page captures) mark themselves
+  const bot = navigator.webdriver ? 1 : 0, src = (q.get("utm_source") || q.get("s") || "").slice(0, 40);                      // automated browsers (including our own page captures) mark themselves
   const API = document.documentElement.dataset.api || "";      // where sign-ups and clicks are posted; empty = this same server
-  const send = (e, more = {}) => navigator.sendBeacon?.(API + "/t", JSON.stringify({ e, sid, vid, bot, page: document.body.dataset.page, d: q.get("d") || "", variant: q.get("v") || "", src: (q.get("utm_source") || q.get("s") || "").slice(0, 40), w: innerWidth, ...more }));
-  send("view", { ref, vh: innerHeight });
+  const send = (e, more = {}) => navigator.sendBeacon?.(API + "/t", JSON.stringify({ e, sid, vid, bot, page: document.body.dataset.page, d: q.get("d") || "", variant: (q.get("v") || "").slice(0, 40) + "~" + vid + "~" + bot, src, w: innerWidth, ...more }));
+  // The queue function deployed on 2026-11-10 keeps only its original fields, and the host is refusing new deploys until its
+  // monthly credits reset. So the visitor id and bot flag ride inside `variant`, and the view details inside `el`;
+  // tools/pull.py unpacks them. The plain fields are sent too and will be kept once the function can be redeployed.
+  send("view", { ref, vh: innerHeight, el: `ref=${ref};vh=${innerHeight};src=${src}` });
   addEventListener("load", () => setTimeout(() => { const n = performance.getEntriesByType("navigation")[0]; if (n) send("load", { v: Math.round(n.loadEventEnd || n.domContentLoadedEventEnd || 0) }); }, 0));
 
   // ---- the teeth: three renders of one arch from one camera; the slider fades through them ----
