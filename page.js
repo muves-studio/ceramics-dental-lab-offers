@@ -15,7 +15,7 @@
     const frames = [...viewer.querySelectorAll(".frames img")], range = viewer.querySelector("input"), label = viewer.querySelector("[data-step]");
     const show = p => {
       frames[1].style.opacity = clamp(p / .5).toFixed(3); frames[2].style.opacity = clamp((p - .5) / .5).toFixed(3);
-      range.style.setProperty("--p", (p * 100).toFixed(1) + "%"); label.textContent = "Step " + (1 + Math.round(p * 9));
+      range.style.setProperty("--p", (p * 100).toFixed(1) + "%"); label.textContent = "Step " + (1 + Math.round(p * 9)) + " of 10";
     };
     let touched = false, playing = false, furthest = 0;
     const play = () => {                     // plays through once when first seen, until the visitor takes over
@@ -37,7 +37,7 @@
   const form = document.querySelector(".form");
   document.querySelectorAll("[data-interest]").forEach(a => a.addEventListener("click", () => { form.elements.interest.value = a.dataset.interest; }));
   document.querySelectorAll('a[href="#start"]').forEach(a => a.addEventListener("click", () => setTimeout(() => form.elements.name.focus({ preventScroll: true }), 700)));
-  form?.addEventListener("submit", e => {
+  form?.addEventListener("submit", async e => {
     e.preventDefault();
     let first;
     form.querySelectorAll("[required]").forEach(f => { const bad = !f.value.trim(); f.classList.toggle("bad", bad); if (bad) first ??= f; });
@@ -45,7 +45,16 @@
     if (first) return first.focus();
     const v = n => form.elements[n].value.trim(), q = new URLSearchParams(location.search);
     const who = { name: v("name"), practice: v("practice"), phone: v("phone"), email: v("email"), page: document.body.dataset.page, d: q.get("d") || "" };
-    fetch(API + "/lead", { method: "POST", mode: "no-cors", keepalive: true, body: JSON.stringify({ ...who, interest: v("interest"), text_ok: form.elements.text_ok.checked, email_ok: form.elements.email_ok.checked }) }).catch(() => {});
+    // Only say "You're in" when the sign-up really arrived. If it did not, say so and give the phone number.
+    const btn = form.querySelector("button[type=submit]"), done = form.querySelector(".form-done");
+    btn.disabled = true; done.hidden = true;
+    let ok = false;
+    try { ok = (await fetch(API + "/lead", { method: "POST", keepalive: true, body: JSON.stringify({ ...who, interest: v("interest"), text_ok: form.elements.text_ok.checked, email_ok: form.elements.email_ok.checked }) })).ok; } catch { ok = false; }
+    if (!ok) {
+      btn.disabled = false; send("form_failed", { el: who.page });
+      done.textContent = "That did not go through. Please call (786) 355-5727."; done.hidden = false;
+      return;
+    }
     // what happens next, in place of the form: who will call, and how to send a first case from their scanner
     form.replaceChildren(document.getElementById("next").content.cloneNode(true)); form.classList.add("done");
     form.querySelector("[data-phone]").textContent = who.phone;
@@ -53,12 +62,12 @@
     form.querySelectorAll("[data-scanner]").forEach(b => b.addEventListener("click", () => {
       form.querySelectorAll("[data-scanner]").forEach(x => x.classList.toggle("on", x === b));
       const s = b.dataset.scanner;
-      const steps = s === "No scanner" ? ["Take your impression as usual", "We pick it up from your office", "Or ship FedEx with our label"]
+      const steps = s === "No scanner" ? ["Take your impression as usual", "Carlos sets up a pickup or a shipping label", "We start when it arrives"]
         : s === "Medit" ? ["Open Medit Link", "Search Ceramics Dental Lab and add us", "Choose us when you send the scan"]
         : [`Open the lab list on your ${s}`, "Search Ceramics Dental Lab and add us", "Choose us when you send the scan"];
       how.replaceChildren(...steps.map(t => Object.assign(document.createElement("li"), { textContent: t }))); how.hidden = false;
       send("scanner", { el: s });
-      fetch(API + "/scanner", { method: "POST", mode: "no-cors", keepalive: true, body: JSON.stringify({ ...who, scanner: s }) }).catch(() => {});
+      fetch(API + "/scanner", { method: "POST", keepalive: true, body: JSON.stringify({ ...who, scanner: s }) }).catch(() => {});
     }));
   });
   form?.querySelectorAll("input:not([type=hidden]):not([type=checkbox])").forEach(f => f.addEventListener("focus", () => send("field", { el: f.name }), { once: true }));
