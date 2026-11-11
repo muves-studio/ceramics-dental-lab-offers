@@ -10,7 +10,10 @@
   let ref = ""; try { ref = document.referrer ? new URL(document.referrer).hostname.slice(0, 60) : ""; } catch {}
   const bot = navigator.webdriver ? 1 : 0, src = (q.get("utm_source") || q.get("s") || "").slice(0, 40);                      // automated browsers (including our own page captures) mark themselves
   const API = document.documentElement.dataset.api || "";      // where sign-ups and clicks are posted; empty = this same server
-  const send = (e, more = {}) => navigator.sendBeacon?.(API + "/t", JSON.stringify({ e, sid, vid, bot, page: document.body.dataset.page, d: q.get("d") || "", variant: (q.get("v") || "").slice(0, 40) + "~" + vid + "~" + bot, src, w: innerWidth, ...more }));
+  // data-api-query="k": post to <API>?k=<name> (the PHP queue, godaddy/offers/q.php) instead of <API>/<name> (the Netlify queue). Unset = the old way.
+  const QS = document.documentElement.dataset.apiQuery || "";
+  const ep = n => QS ? `${API}?${encodeURIComponent(QS)}=${n}` : `${API}/${n}`;
+  const send = (e, more = {}) => navigator.sendBeacon?.(ep("t"), JSON.stringify({ e, sid, vid, bot, page: document.body.dataset.page, d: q.get("d") || "", variant: (q.get("v") || "").slice(0, 40) + "~" + vid + "~" + bot, src, w: innerWidth, ...more }));
   // The queue function deployed on 2026-11-10 keeps only its original fields, and the host is refusing new deploys until its
   // monthly credits reset. So the visitor id and bot flag ride inside `variant`, and the view details inside `el`;
   // tools/pull.py unpacks them. The plain fields are sent too and will be kept once the function can be redeployed.
@@ -58,7 +61,7 @@
     const btn = form.querySelector("button[type=submit]"), done = form.querySelector(".form-done");
     btn.disabled = true; done.hidden = true;
     let ok = false;
-    try { ok = (await fetch(API + "/lead", { method: "POST", keepalive: true, body: JSON.stringify({ ...who, interest: v("interest"), text_ok: form.elements.text_ok.checked, email_ok: form.elements.email_ok.checked }) })).ok; } catch { ok = false; }
+    try { ok = (await fetch(ep("lead"), { method: "POST", keepalive: true, body: JSON.stringify({ ...who, interest: v("interest"), text_ok: form.elements.text_ok.checked, email_ok: form.elements.email_ok.checked }) })).ok; } catch { ok = false; }
     if (!ok) {
       btn.disabled = false; submitted = false; send("form_failed", { el: who.page });
       done.textContent = "That did not go through. Please call (786) 355-5727."; done.hidden = false;
@@ -79,7 +82,7 @@
       pick = s; clearTimeout(pickTimer); pickTimer = setTimeout(sendPick, 4000);      // the doctor may change their mind: send the last pick once they settle, or on leaving
     }));
     let pick = "", pickTimer;
-    const sendPick = () => { clearTimeout(pickTimer); if (!pick) return; const scanner = pick; pick = ""; fetch(API + "/scanner", { method: "POST", keepalive: true, body: JSON.stringify({ ...who, scanner }) }).catch(() => {}); };
+    const sendPick = () => { clearTimeout(pickTimer); if (!pick) return; const scanner = pick; pick = ""; fetch(ep("scanner"), { method: "POST", keepalive: true, body: JSON.stringify({ ...who, scanner }) }).catch(() => {}); };
     addEventListener("pagehide", sendPick);
     document.addEventListener("visibilitychange", () => { if (document.hidden) sendPick(); });
   });
