@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <link rel="preload" href="fonts/PlusJakartaSans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="img/logo-mark.png">
-<link rel="stylesheet" href="page.css?v=11111020">
+<link rel="stylesheet" href="page.css?v=11111428">
 </head>
 <body class="lay-dark" data-page="implants">
 <!-- Built by tools/build.py. Edit the PAGES entry there, not this file. -->
@@ -26,15 +26,15 @@
   </header>
   <div class="hero-in">
     <div class="hero-copy">
-      <h1>Your implant case, planned free.</h1>
+      <h1>Your implant case<span class="pu">,</span> planned free<span class="pu">.</span></h1>
       <a class="deal word" href="#start"><span>Implant case planning</span><strong>Free</strong></a>
     </div>
     <form class="form" id="start" novalidate>
       <p class="form-title">Start your case</p>
       <input type="hidden" name="interest" value="implants">
-      <label><span>Your name</span><input name="name" autocomplete="name" placeholder="Name" required></label>
-      <label><span>Practice</span><input name="practice" autocomplete="organization" placeholder="Practice" required></label>
-      <label><span>Phone</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Phone" required></label>
+      <label><span>Your name</span><input name="name" autocomplete="name" placeholder="Name" required><em class="err" id="err-name" hidden></em></label>
+      <label><span>Practice</span><input name="practice" autocomplete="organization" placeholder="Practice" required><em class="err" id="err-practice" hidden></em></label>
+      <label><span>Phone</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Phone" required><em class="err" id="err-phone" hidden></em></label>
       <label><span>Email</span><input name="email" type="email" inputmode="email" autocomplete="email" placeholder="Email (optional)"></label>
       <div class="ticks">
         <label class="tick"><input type="checkbox" name="text_ok"><b>Okay to text me</b></label>
@@ -53,16 +53,16 @@
         <a class="btn" href="tel:+17863555727">Call (786) 355-5727</a>
       </div>
     </template>
-    <a class="side s1" href="#start"><img src="img/abutments.webp" alt=""></a><a class="side s2" href="#start"><img src="img/hybrid.webp" alt=""></a>
+    <a class="side s1" href="#start"><img src="img/implant-model.webp" alt=""></a><a class="side s2" href="#start"><img src="img/lab-implants.webp" alt=""></a>
   </div>
 </section>
 
 <section class="move">
-  <h2 class="reveal">Single unit to full arch.</h2>
-  <div class="trio"><a class="reveal" href="#start" data-interest="Custom abutments"><img src="img/abutments.webp" alt="Custom abutments" loading="lazy"><span>Custom abutments</span></a><a class="reveal" href="#start" data-interest="Screw-retained"><img src="img/implant-model.webp" alt="Screw-retained" loading="lazy"><span>Screw-retained</span></a><a class="reveal" href="#start" data-interest="Full arch"><img src="img/screw-retained.webp" alt="Full arch" loading="lazy"><span>Full arch</span></a></div>
+  <h2 class="reveal">Single unit to full arch<span class="pu">.</span></h2>
+  <div class="trio"><a class="reveal" href="#start" data-interest="Custom abutments"><img src="img/abutments.webp" alt="Custom abutments" loading="lazy"><span>Custom abutments</span></a><a class="reveal" href="#start" data-interest="Screw-retained"><img src="img/screw-retained.webp" alt="Screw-retained" loading="lazy"><span>Screw-retained</span></a><a class="reveal" href="#start" data-interest="Full arch"><img src="img/hybrid.webp" alt="Full arch" loading="lazy"><span>Full arch</span></a></div>
 </section>
 
-<section class="steps"><a class="step reveal" href="#start"><b>01</b><span>Send your scan</span><img src="img/scan.webp" alt="" loading="lazy"></a><a class="step reveal" href="#start"><b>02</b><span>We design it</span><img src="img/lab-design.webp" alt="" loading="lazy"></a><a class="step reveal" href="#start"><b>03</b><span>You seat it</span><img src="img/implant-model.webp" alt="" loading="lazy"></a></section>
+<section class="steps"><a class="step reveal" href="#start"><b>01</b><span>Send your scan</span><img src="img/scan.webp" alt="" loading="lazy"></a><a class="step reveal" href="#start"><b>02</b><span>We design it</span><img src="img/lab-design.webp" alt="" loading="lazy"></a><a class="step reveal" href="#start"><b>03</b><span>You seat it</span><img src="img/implant.webp" alt="" loading="lazy"></a></section>
 
 <section class="offer">
   <img class="offer-photo" src="img/lab-implants.webp" alt="" loading="lazy">
@@ -76,6 +76,6 @@
 
 </main>
 <footer class="foot">Ceramics Dental Lab, 3363 NE 163rd Street, Suite 804, North Miami Beach, FL.</footer>
-<script src="page.js?v=11111020"></script>
+<script src="page.js?v=11111428"></script>
 </body>
 </html>

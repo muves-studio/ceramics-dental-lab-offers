@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <link rel="preload" href="fonts/PlusJakartaSans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="img/logo-mark.png">
-<link rel="stylesheet" href="page.css?v=11111020">
+<link rel="stylesheet" href="page.css?v=11111428">
 </head>
 <body class="lay-film" data-page="aligner">
 <!-- Built by tools/build.py. Edit the PAGES entry there, not this file. -->
@@ -26,15 +26,15 @@
   </header>
   <div class="hero-in">
     <div class="hero-copy">
-      <h1>Clear aligners from your own practice.</h1>
+      <h1>Clear aligners from your own practice<span class="pu">.</span></h1>
       <a class="deal" href="#start"><span>First 10 aligner steps</span><strong>$375</strong></a>
     </div>
     <form class="form" id="start" novalidate>
       <p class="form-title">Start your case</p>
       <input type="hidden" name="interest" value="aligner">
-      <label><span>Your name</span><input name="name" autocomplete="name" placeholder="Name" required></label>
-      <label><span>Practice</span><input name="practice" autocomplete="organization" placeholder="Practice" required></label>
-      <label><span>Phone</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Phone" required></label>
+      <label><span>Your name</span><input name="name" autocomplete="name" placeholder="Name" required><em class="err" id="err-name" hidden></em></label>
+      <label><span>Practice</span><input name="practice" autocomplete="organization" placeholder="Practice" required><em class="err" id="err-practice" hidden></em></label>
+      <label><span>Phone</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Phone" required><em class="err" id="err-phone" hidden></em></label>
       <label><span>Email</span><input name="email" type="email" inputmode="email" autocomplete="email" placeholder="Email (optional)"></label>
       <div class="ticks">
         <label class="tick"><input type="checkbox" name="text_ok"><b>Okay to text me</b></label>
@@ -60,7 +60,7 @@
 <section class="steps"><a class="step reveal" href="#start"><b>01</b><span>Send your scan</span><img src="img/scan.webp" alt="" loading="lazy"></a><a class="step reveal" href="#start"><b>02</b><span>Treatment plan</span><img src="img/lab-design.webp" alt="" loading="lazy"></a><a class="step reveal" href="#start"><b>03</b><span>Approve and apply</span><img src="img/lab-aligners.webp" alt="" loading="lazy"></a></section>
 
 <section class="move">
-  <h2 class="reveal">Ten steps. Tooth by tooth.</h2>
+  <h2 class="reveal">Ten steps<span class="pu">.</span> Tooth by tooth<span class="pu">.</span></h2>
   <div class="viewer reveal">
     <div class="frames" role="img" aria-label="An upper arch moving from crowded to aligned">
       <img src="img/arch-01.webp" alt="" loading="lazy"><img src="img/arch-05.webp" alt="" loading="lazy"><img src="img/arch-10.webp" alt="" loading="lazy">
@@ -69,7 +69,7 @@
   </div>
 </section>
 
-<section class="offer">
+<section class="offer framed">
   <img class="offer-photo recolor" src="img/steps.webp" alt="" loading="lazy">
   <div class="offer-in reveal">
     <h2>First 10 steps</h2>
@@ -81,6 +81,6 @@
 
 </main>
 <footer class="foot">Ceramics Dental Lab, 3363 NE 163rd Street, Suite 804, North Miami Beach, FL. Introductory pricing, first case per practice.</footer>
-<script src="page.js?v=11111020"></script>
+<script src="page.js?v=11111428"></script>
 </body>
 </html>

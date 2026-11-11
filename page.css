@@ -19,6 +19,7 @@ img, video { display: block; max-width: 100%; }
 h1, h2, p, ul { margin: 0; }
 h1, h2 { font-weight: 800; letter-spacing: -0.045em; line-height: .96; text-wrap: balance; }
 h2 { font-size: clamp(2.25rem, 5.6vw, 4.5rem); }
+.pu { margin-left: -.1em; }   /* the final comma or full stop of a tightly tracked headline sits against the word, not a space away */
 a { color: inherit; text-decoration: none; }
 :where(a, button, input):focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; border-radius: 12px; }
 
@@ -57,7 +58,12 @@ a { color: inherit; text-decoration: none; }
 .form label span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .form input:not([type=hidden]):not([type=checkbox]) { font: inherit; font-size: 1.125rem; color: var(--ink); width: 100%; padding: 1rem 1.1rem; border: 2px solid transparent; border-radius: 14px; background: var(--field); transition: border-color .2s var(--ease), background .2s var(--ease); appearance: none; }
 .form input::placeholder { color: #3A4B52; font-weight: 600; }
-.form input:focus { outline: 0; border-color: var(--blue); background: #fff; }
+.form input:not([type=checkbox]):focus { outline: 0; border-color: var(--blue); background: #fff; }
+.tick input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 2px; }
+.form .bad:focus { box-shadow: 0 0 0 3px var(--sky); }
+.err[hidden] { display: none; }
+.err { display: block; margin: .3rem .2rem 0; font-style: normal; font-weight: 700; font-size: .9375rem; line-height: 1.25; color: #b3261e; }
+.form-done a { color: var(--blue-dark); text-decoration: underline; text-underline-offset: 3px; }
 .form .bad { border-color: #c0392b !important; }
 .form .btn { margin-top: .3rem; }
 .form-done { font-weight: 800; color: var(--navy); text-align: center; }
@@ -126,9 +132,15 @@ a { color: inherit; text-decoration: none; }
 .offer .big { font-size: clamp(7rem, 22vw, 17rem); font-weight: 800; letter-spacing: -0.07em; line-height: .86; margin-top: clamp(1.25rem, 3vw, 2.75rem); }
 .offer .big.word { margin-top: clamp(.5rem, 1.5vw, 1.25rem); font-size: clamp(4.25rem, 15vw, 12rem); letter-spacing: -0.06em; line-height: .95; }
 .offer-line { margin: 1.1rem 0 0; font-size: clamp(1.25rem, 2.4vw, 1.875rem); font-weight: 800; letter-spacing: -0.03em; }
-.offer .btn { margin-top: 1.75rem; }
+.offer .btn { margin-top: clamp(2.25rem, 4vw, 3.5rem); }
 .offer ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.5rem 0 2rem; }
 .offer li { padding: .75rem 1.3rem; border-radius: 14px; background: var(--blue); font-weight: 800; font-size: clamp(1.0625rem, 1.8vw, 1.375rem); letter-spacing: -0.02em; }
+
+/* offer with a picture that carries the offer (aligner: the ten aligners): text first, the picture below it in its own frame, nothing over it */
+.offer.framed { display: flex; flex-direction: column; align-items: stretch; }
+.offer.framed::after { display: none; }
+.offer.framed .offer-in { order: 1; padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+.offer.framed .offer-photo { order: 2; position: static; inset: auto; width: calc(100% - 2 * var(--gut)); max-width: calc(var(--wrap) - 2 * var(--gut)); height: auto; aspect-ratio: 3 / 1; object-position: 50% 48%; margin: 0 auto clamp(3rem, 7vw, 5.5rem); border-radius: var(--r); box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .7); }
 
 /* ---------- the rest of the work ---------- */
 .more { max-width: var(--wrap); margin: 0 auto; padding: clamp(3rem, 7vw, 5.5rem) var(--gut); display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(.6rem, 1.6vw, 1.25rem); }
@@ -170,7 +182,7 @@ a { color: inherit; text-decoration: none; }
 .lay-split { background: #F4F7F7; }
 .lay-split .hero { background: #F4F7F7; color: var(--navy); }
 .lay-split .hero::before { display: none; }
-.lay-split .hero-film { left: auto; right: 0; width: 46%; border-radius: 0 0 0 90px; }
+.lay-split .hero-film { left: auto; right: 0; width: 46%; border-radius: 0 0 0 90px; object-position: 6% 50%; }   /* the scanner is at the left of the picture */
 .lay-split .call { color: #fff; background: var(--navy); padding: .55rem 1.1rem; border-radius: 12px; font-size: 1.0625rem; }
 .lay-split .hero-in { grid-template-columns: 1fr; gap: 1.75rem; padding-block: clamp(1rem, 2.5vw, 2rem) clamp(2.5rem, 5vw, 4rem); }
 .lay-split .hero-copy, .lay-split .form { max-width: min(590px, 45vw); }
@@ -223,7 +235,7 @@ a { color: inherit; text-decoration: none; }
 .lay-type .hero::before { background: linear-gradient(120deg, rgba(6, 118, 143, .93) 0%, rgba(6, 118, 143, .78) 50%, rgba(4, 99, 129, .5) 100%); }
 .lay-type .hero-in { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
 .lay-type .hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); text-shadow: none; }
-.lay-type .deal { padding: 0; margin-top: 1.5rem; background: none; box-shadow: none; }
+.lay-type .deal { padding: 0 0 1.1rem; margin-top: 1.5rem; background: none; box-shadow: none; }
 .lay-type .deal:hover { background: none; transform: none; }
 .lay-type .deal span { color: #fff; font-size: clamp(1.5rem, 3vw, 2.5rem); }
 .lay-type .deal strong { font-size: clamp(9rem, 24vw, 20rem); line-height: .9; margin-top: .5rem; }
@@ -239,13 +251,13 @@ a { color: inherit; text-decoration: none; }
   .deal.word { grid-template-columns: 1fr; gap: 0; } .deal.word span { order: 0; max-width: none; } .deal.word strong { font-size: clamp(3rem, 15vw, 4.5rem); }
   .trio span { bottom: .55rem; padding-inline: .35rem; font-size: .875rem; line-height: 1.1; letter-spacing: -0.02em; }
   .lay-film .steps { margin-top: -5rem; }
-  .lay-split .hero-film { position: relative; order: 1; width: 100%; height: 17svh; border-radius: 0; }
+  .lay-split .hero-film { position: relative; order: 3; width: calc(100% - 2 * var(--gut)); height: auto; aspect-ratio: 3 / 2; object-position: 50% 50%; margin: 0 auto 1.5rem; border-radius: 18px; }   /* the picture follows the form, scanner whole */
   .lay-split .top { padding-block: .9rem; } .lay-split .call { white-space: nowrap; font-size: .9375rem; padding: .5rem .8rem; } 
   .lay-split .form { grid-template-columns: 1fr; }
-  .lay-split .top { order: 0; } .lay-split .hero-in { order: 2; padding-top: 1.25rem; }
+  .lay-split .top { order: 0; } .lay-split .hero-in { order: 2; padding-top: 1.25rem; padding-bottom: 1.5rem; }
   .lay-split .hero-copy, .lay-split .form { max-width: none; }
   .lay-split .deal { grid-template-columns: 1fr; gap: 0; } .lay-split .deal.word strong { font-size: clamp(5rem, 26vw, 7rem); }
-  .lay-dark .hero-in { grid-template-columns: 1fr; grid-template-areas: "copy" "a" "form" "b"; gap: 1rem; }
+  .lay-dark .hero-in { grid-template-columns: 1fr; grid-template-areas: "copy" "form" "a" "b"; gap: 1rem; }   /* form straight under the offer; the two pictures follow it */
   .lay-dark .side.s1 { aspect-ratio: 16 / 7; transform: none; } .lay-dark .side.s2 { aspect-ratio: 16 / 9; transform: none; }
   .lay-dark .deal.word { display: inline-flex; gap: .7rem; padding-inline: 1.1rem; } .lay-dark .deal.word span { font-size: 1rem; text-align: left; line-height: 1.15; } .lay-dark .deal.word strong { font-size: 2.5rem; }
   .side { aspect-ratio: 1; border-radius: 18px; }
@@ -264,11 +276,41 @@ a { color: inherit; text-decoration: none; }
   .frames { aspect-ratio: 3 / 2; }
   .scrubber { padding: .8rem 1rem 1rem; gap: .75rem; font-size: 1rem; }
   .offer::after { background: rgba(3, 56, 68, .7); }
+  .offer.framed .offer-photo { aspect-ratio: 3.4 / 1; border-radius: 18px; }
   .close { justify-content: center; text-align: center; }
 }
 @media (max-width: 520px) {
   .brand b { font-size: 1.125rem; } .brand img { width: 36px; height: 36px; } .call { font-size: 1rem; }
   .close .btn, .form .btn { width: 100%; }
+  /* phones only (not the 768 tablet): the whole form, button included, inside the first screen of a 390 by 844 phone (2026-11-11 review).
+     Fields stay 44 px or more tall with 18 px type; nothing is removed. */
+  .top { padding-block: .8rem; }
+  .hero-in { gap: 1rem; padding-top: 1rem; }
+  .hero h1 { font-size: 2.9rem; line-height: .98; }
+  .deal { margin-top: 1rem; }
+  .form { gap: .65rem; padding: 1.15rem; }
+  .form-title { margin-bottom: 0; }
+  .form input:not([type=hidden]):not([type=checkbox]) { padding: .85rem 1rem; }
+  .lay-split .top { padding-block: .7rem; }
+  .lay-split .hero-in { padding-top: .5rem; padding-bottom: 1.5rem; gap: 1.25rem; }
+  .lay-split .hero h1 { font-size: 2.75rem; }
+  .offer.framed .offer-photo { aspect-ratio: 4.2 / 1; }   /* the row is a thin band: a frame the shape of the band, all ten still countable */
+  .lay-type .deal strong { margin-bottom: .1rem; }
+  .lay-split .hero-film { aspect-ratio: 4 / 3; }   /* the whole picture: scanner and screen */
+}
+/* short phones (375 by 667, 390 by 700): the whole form, button included, on the first screen. Tall phones keep the layout above. */
+@media (max-width: 520px) and (max-height: 720px) {
+  .form > .form-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }   /* still there for screen readers */
+  .top, .lay-split .top { padding-block: .6rem; }
+  .hero-in, .lay-split .hero-in { gap: .85rem; padding-top: .5rem; }
+  .hero h1 { font-size: 2.45rem; } .lay-split .hero h1 { font-size: 2.35rem; } .lay-dark .hero h1 { font-size: 2.25rem; } .lay-type .hero h1 { font-size: 2.05rem; }
+  .deal { margin-top: .75rem; padding: .6rem 1.2rem .7rem 1rem; }
+  .deal strong { font-size: 3.6rem; } .lay-split .deal.word strong { font-size: 4.25rem; } .lay-type .deal strong { font-size: 4.75rem; }
+  .lay-type .deal { margin-top: .4rem; padding: 0 0 .4rem; } .lay-split .deal { margin-top: .6rem; padding: 0; }
+  .lay-dark .deal { margin-top: .75rem; padding: .5rem 1.1rem .6rem; }
+  .form { gap: .55rem; padding: 1rem; }
+  .form input:not([type=hidden]):not([type=checkbox]) { font-size: 1rem; padding: .6rem 1rem; }
+  .form .btn { padding-block: .95rem; margin-top: .15rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

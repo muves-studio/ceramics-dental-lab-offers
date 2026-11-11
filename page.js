@@ -50,8 +50,17 @@
   document.querySelectorAll('a[href="#start"]').forEach(a => a.addEventListener("click", () => setTimeout(() => form.elements.name.focus({ preventScroll: true }), 700)));
   form?.addEventListener("submit", async e => {
     e.preventDefault();
+    // Checked before anything is sent. A missing or short field gets a line of words under it, aria-invalid, and focus on the first one.
+    const MSG = { name: "Enter your name.", practice: "Enter your practice.", phone: "Enter your phone." };
+    const digits = form.elements.phone.value.replace(/\D/g, ""), phoneText = form.elements.phone.value.trim();
+    const phoneOk = /^\+?[\d\s().-]+$/.test(phoneText) && (digits.length === 10 || (digits.length === 11 && digits[0] === "1"));
     let first;
-    form.querySelectorAll("[required]").forEach(f => { const bad = !f.value.trim(); f.classList.toggle("bad", bad); if (bad) first ??= f; });
+    form.querySelectorAll("[required]").forEach(f => {
+      const empty = !f.value.trim(), bad = empty || (f.name === "phone" && !phoneOk), note = form.querySelector("#err-" + f.name);
+      f.classList.toggle("bad", bad); if (bad) f.setAttribute("aria-invalid", "true"); else f.removeAttribute("aria-invalid");
+      if (note) { note.hidden = !bad; note.textContent = bad ? (empty ? MSG[f.name] : "Enter a 10-digit phone number.") : ""; if (bad) f.setAttribute("aria-describedby", note.id); else f.removeAttribute("aria-describedby"); }
+      if (bad) first ??= f;
+    });
     send(first ? "form_incomplete" : "form_sent", { el: form.elements.interest.value });
     if (first) return first.focus();
     const v = n => form.elements[n].value.trim(), q = new URLSearchParams(location.search);
@@ -64,7 +73,7 @@
     try { ok = (await fetch(ep("lead"), { method: "POST", keepalive: true, body: JSON.stringify({ ...who, interest: v("interest"), text_ok: form.elements.text_ok.checked, email_ok: form.elements.email_ok.checked }) })).ok; } catch { ok = false; }
     if (!ok) {
       btn.disabled = false; submitted = false; send("form_failed", { el: who.page });
-      done.textContent = "That did not go through. Please call (786) 355-5727."; done.hidden = false;
+      done.replaceChildren("That did not go through. Please call ", Object.assign(document.createElement("a"), { href: "tel:+17863555727", textContent: "(786) 355-5727" }), "."); done.hidden = false;
       return;
     }
     // what happens next, in place of the form: who will call, and how to send a first case from their scanner
@@ -92,6 +101,7 @@
     f.addEventListener("focus", () => { lastField = f.name; if (!firstFocus) { firstFocus = true; send("first_focus", { el: f.name, v: Math.round(performance.now() - t0) }); } });
     f.addEventListener("focus", () => send("field", { el: f.name }), { once: true });
   });
+  form?.querySelectorAll("[required]").forEach(f => f.addEventListener("input", () => { f.classList.remove("bad"); f.removeAttribute("aria-invalid"); f.removeAttribute("aria-describedby"); const n = form.querySelector("#err-" + f.name); if (n) { n.hidden = true; n.textContent = ""; } }));
   form?.querySelectorAll("input[type=checkbox]").forEach(c => c.addEventListener("change", () => send("tick", { el: c.name, v: c.checked ? 1 : 0 })));
   addEventListener("pagehide", () => { if (firstFocus && !submitted) send("abandon", { el: lastField }); });
 
