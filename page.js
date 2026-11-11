@@ -52,7 +52,7 @@
     send(first ? "form_incomplete" : "form_sent", { el: form.elements.interest.value });
     if (first) return first.focus();
     const v = n => form.elements[n].value.trim(), q = new URLSearchParams(location.search);
-    const who = { name: v("name"), practice: v("practice"), phone: v("phone"), email: v("email"), page: document.body.dataset.page, d: q.get("d") || "", sid, vid };
+    const who = { name: v("name"), practice: v("practice"), phone: v("phone"), email: v("email"), page: document.body.dataset.page, d: q.get("d") || "", sid };   // the browser id (vid) is NOT sent with a sign-up: tying it to a named person waits for the lawyer (review, 2026-11-11)
     submitted = true;
     // Only say "You're in" when the sign-up really arrived. If it did not, say so and give the phone number.
     const btn = form.querySelector("button[type=submit]"), done = form.querySelector(".form-done");
