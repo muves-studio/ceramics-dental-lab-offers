@@ -230,7 +230,7 @@ a { color: inherit; text-decoration: none; }
 .lay-center .move { margin-top: 0; background: var(--pale); color: var(--navy); }
 .lay-center .steps { margin-bottom: clamp(1rem, 3vw, 2rem); }
 
-/* type: remakes. No photo behind the offer: bright blue and a $0 as tall as the form, the film below. */
+/* type: remakes. No photo behind the offer: bright blue and a big word as tall as the form, the film below. */
 .lay-type .hero { background: linear-gradient(140deg, #1CA9C7 0%, var(--blue) 45%, var(--blue-dark) 100%); }
 .lay-type .hero::before { background: linear-gradient(120deg, rgba(6, 118, 143, .93) 0%, rgba(6, 118, 143, .78) 50%, rgba(4, 99, 129, .5) 100%); }
 .lay-type .hero-in { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
